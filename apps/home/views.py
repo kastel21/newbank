@@ -48,26 +48,13 @@ def pages(request):
         return HttpResponse(html_template.render(context, request))
 
 
-from datetime import date
-from datetime import datetime
-
-def age(birthdate):
-
-    date_str = birthdate.split("T")[0]
-
-    dto = datetime.strptime(date_str, '%Y-%m-%d').date()
-
-    today = date.today()
-    age = today.year - dto.year - ((today.month, today.day) < (dto.month, dto.day))
-    return age
-
 class CreatePatientView(LoginRequired, CreateView):
     template_name = 'patients/create_patient.html'
     model = Patient
     fields = ['name', 'gender','study','dob']
 
     def form_valid(self, form):
-        form.instance.age = age(form.instance.dob)
+        form.instance.age = self.age(form.instance.dob)
         # form.instance.createdby_email = self.request.user.email
         # form.instance.assignto_email = self.get_email(form.instance.assignto)
 
@@ -81,6 +68,18 @@ class CreatePatientView(LoginRequired, CreateView):
 
     def get_success_url(self):
         return reverse('home')
+
+    def age(self,birthDate ):
+        from datetime import date
+        from datetime import datetime
+
+        dt_obj = datetime.strptime(birthDate.split("T")[0], '%y-%m/%d').date()
+
+        today = date.today()
+        age = today.year - dt_obj.year -((today.month, today.day) < (dt_obj.month, dt_obj.day))
+    
+        return age
+    
 
 class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
     template_name = 'patients/create_patient.html'
@@ -225,3 +224,4 @@ class StudyView(PatientIndexView,LoginRequired):
         context['total'] = patient_list.count()
 
         return context
+
