@@ -8,7 +8,7 @@ from . models import *
 
 
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('name','_id')
+    list_display = ('name','id')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(AuthorAdmin, self).get_form(request, obj, **kwargs)
@@ -26,7 +26,7 @@ admin.site.register(Study,AuthorAdmin)
 # admin.site.register(Sample,AuthorAdmin)
 
 class Sample_Admin(admin.ModelAdmin):
-    list_display = ('_id','study','type','date_of_archive', 'patient')
+    list_display = ('id','study','type','date_of_archive', 'patient')
 admin.site.register(Sample, Sample_Admin)
 
 # class PatientAdmin(admin.ModelAdmin):
@@ -39,13 +39,7 @@ admin.site.register(Sample, Sample_Admin)
 # admin.site.register(Patient,PatientAdmin)
 
 # admin.site.register(Patient,AuthorAdmin)
-@admin.register(Patient)
-class TaskAdmin(admin.ModelAdmin):
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        formfield = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        if db_field.name == "user":
-            formfield.label_from_instance = lambda obj: f'{obj.first_name} ({obj.last_name})'
-        return formfield
+
 
 class PatientAdmin(admin.ModelAdmin):
     list_display = ('name','id','study','age')

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class Study(models.Model):
     statuses = [("On going","On going"),("Ended","Ended"),("n/a","n/a")]
 
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     narrative_name= models.CharField(max_length=500, default="sadf asd fadfg arsg dvadhf dgjhbn")
     status = models.CharField(choices=statuses,max_length=200, default="On going")
@@ -34,7 +34,7 @@ class Patient(models.Model):
 
 
 class Freezer(models.Model):
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     capacity = models.IntegerField()
     name = models.CharField(max_length=200)
     shelves = models.IntegerField()
@@ -42,45 +42,45 @@ class Freezer(models.Model):
         return self._id
 
 class Shelf(models.Model):
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     capacity = models.IntegerField()
     name = models.CharField(max_length=200)
     racks = models.IntegerField()
     freezer = models.ForeignKey(Freezer, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        name = str(self.freezer)+"-"+str(self._id)
+        name = str(self.freezer)+"-"+str(self.id)
         return name
 
 class Rack(models.Model):
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     capacity = models.IntegerField()
     def __str__(self) -> str:
-        name = str(self.freezer)+"-"+str(self.shelf)+"-"+str(self._id)
+        name = str(self.freezer)+"-"+str(self.shelf)+"-"+str(self.id)
         return name
 
 
 class Box(models.Model):
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     capacity = models.IntegerField()
     rack= models.ForeignKey(Rack, on_delete=models.CASCADE)
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
     freezer = models.ForeignKey(Freezer, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        name = str(self.freezer)+"-"+str(self.shelf)+"-"+str(self.rack)+"-"+str(self._id)
+        name = str(self.freezer)+"-"+str(self.shelf)+"-"+str(self.rack)+"-"+str(self.id)
         return name
 
 
 class Sample(models.Model):
-    _id = models.CharField(primary_key=True, max_length=200)
+    id = models.CharField(primary_key=True, max_length=200)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     date_of_archive = models.CharField(max_length=200)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        return self._id
+        return self.id
 
 class Cube(models.Model):
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     box = models.ForeignKey(Box, on_delete=models.CASCADE)
     rack= models.ForeignKey(Rack, on_delete=models.CASCADE)
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
@@ -88,7 +88,7 @@ class Cube(models.Model):
     occupied = models.BooleanField(default=False)
     sample = models.ForeignKey(Sample, null=True,on_delete=models.CASCADE)
     def __str__(self) -> str:
-        name = str(self.freezer)+"-"+str(self.shelf)+"-"+str(self.rack)+"-"+str(self.box)+"-"+str(self._id)
+        name = str(self.freezer)+"-"+str(self.shelf)+"-"+str(self.rack)+"-"+str(self.box)+"-"+str(self.id)
         return name
 
 

@@ -27,12 +27,6 @@ urlpatterns = [
 
 
 
-    #**********************stduy urls***********************************************
-
-    path('/add_study',views.CreateStudyView.as_view(), name='add_study'),
-    path('/view_studies',views.StudyIndexView.as_view(), name='view_studies'),
-
-
     #**********************sample urls***********************************************
     path('/add_sample',views.CreateSampleView.as_view(), name='add_sample'),
     path('/remove_sample',views.DeleteSampleView.as_view(), name='remove_sample'),
@@ -43,6 +37,19 @@ urlpatterns = [
 
 
     # Matches any html file
-    re_path(r'^.*\.*', views.pages, name='pages'),
+    # re_path(r'^.*\.*', views.pages, name='pages'),
+
+
+
+
+
+
+        #**********************stduy urls***********************************************
+
+    re_path(r'^(?P<studyid>\d+)/details/$',views.studyDetails, name='studyDetails'),
+    path('/add_study',views.CreateStudyView.as_view(), name='add_study'),
+    re_path('view_studies',views.StudyIndexView.as_view(), name='view_studies'),
+    re_path(r'^(?P<studyid>\d+)/edit_study/$',views.UpdateStudyView.as_view(), name='edit_study'),
+    re_path(r'^(?P<stduyid>\d+)/delete_study/$',views.DeleteStudyView.as_view(), name='remove_study'),
 
 ]

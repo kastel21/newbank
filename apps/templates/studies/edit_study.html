@@ -1,11 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Edit Task | TaskManagement{% endblock %}
+{% block title %}Edit Study | Bank{% endblock %}
 
 {% block content %}
-<div class="col-md-offset-2 col-md-8">
-    <h2>Edit Your Task!</h2><hr>
+<style>
+    input[type=text] {
+  border: 2px solid rgb(37, 35, 35);
+  border-radius: 4px;
+}
+</style>
+<div style="margin-left: 5%;" class="col-md-offset-2 col-md-8">
+    <h2>Edit Your Study!</h2><hr>
     <form method="post">
         {% csrf_token %}
 

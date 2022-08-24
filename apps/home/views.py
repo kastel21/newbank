@@ -25,30 +25,30 @@ def index(request):
     return HttpResponse(html_template.render(context, request))
 
 
-@login_required(login_url="/login/")
-def pages(request):
-    context = {}
-    # All resource paths end in .html.
-    # Pick out the html file name from the url. And load that template.
-    try:
+# @login_required(login_url="/login/")
+# def pages(request):
+#         context = {}
+#     # All resource paths end in .html.
+#     # Pick out the html file name from the url. And load that template.
+#     # try:
 
-        load_template = request.path.split('/')[-1]
+#         load_template = request.path.split('/')[-1]
 
-        if load_template == 'admin':
-            return HttpResponseRedirect(reverse('admin:index'))
-        context['segment'] = load_template
+#         if load_template == 'admin':
+#             return HttpResponseRedirect(reverse('admin:index'))
+#         context['segment'] = load_template
 
-        html_template = loader.get_template('home/' + load_template)
-        return HttpResponse(html_template.render(context, request))
+#         html_template = loader.get_template('home/' + load_template)
+#         return HttpResponse(html_template.render(context, request))
 
-    except template.TemplateDoesNotExist:
+#     # except template.TemplateDoesNotExist:
 
-        html_template = loader.get_template('home/page-404.html')
-        return HttpResponse(html_template.render(context, request))
+#     #     html_template = loader.get_template('home/page-404.html')
+#     #     return HttpResponse(html_template.render(context, request))
 
-    except:
-        html_template = loader.get_template('home/page-500.html')
-        return HttpResponse(html_template.render(context, request))
+#     # except:
+#     #     html_template = loader.get_template('home/page-500.html')
+#     #     return HttpResponse(html_template.render(context, request))
 
 
 class CreatePatientView(LoginRequired, CreateView):
@@ -223,86 +223,7 @@ class PatientView(PatientIndexView,LoginRequired):
 
 
 
-#methods and classes for studies
 
-class CreateStudyView(LoginRequired, CreateView):
-    template_name = 'studies/create_study.html'
-    model = Study
-    fields = ['name', 'narrative_name','status']
-
-    def form_valid(self, form):
-        # form.instance.age = age(form.instance.dob)
-        # form.instance.createdby_email = self.request.user.email
-        # form.instance.assignto_email = self.get_email(form.instance.assignto)
-
-        return super(CreateStudyView, self).form_valid(form)
-
-
-
-    def get_email(self,username):
-        email = User.objects.get(username = username).email
-        return email
-
-    def get_success_url(self):
-        return reverse('home')
-
-class DeleteStudyView(LoginRequired, AuthorshipRequired, DeleteView):
-    template_name = 'patients/create_patient.html'
-    model = Patient
-    pk_url_kwarg = 'taskid'
-
-    def get_success_url(self):
-        return reverse_lazy('home')
-
-
-
-class StudyIndexView(LoginRequired,ListView):
-    model = Study
-    context_object_name = 'questions'
-    template_name = 'home/studies.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(StudyIndexView, self).get_context_data(*args, **kwargs)
-        study_list = Study.objects.all().order_by('-_id')
-        paginator = Paginator(study_list, 6)
-
-        page = self.request.GET.get('page')
-        try:
-            studies = paginator.page(page)
-        except PageNotAnInteger:
-            studies = paginator.page(1)
-        except EmptyPage:
-            studies = paginator.page(paginator.num_pages)
-
-        context['allstudies'] = True
-        context['studies'] = studies
-        context['total'] = study_list.count()
-
-        return context
-
-
-
-
-class StudyView(PatientIndexView,LoginRequired):
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(PatientIndexView, self).get_context_data(*args, **kwargs)
-        patient_list = Patient.objects.filter(Q( assignto = self.request.user) | Q(createdby=self.request.user) )
-        paginator = Paginator(patient_list, 6)
-
-        page = self.request.GET.get('page')
-        try:
-            tasks = paginator.page(page)
-        except PageNotAnInteger:
-            tasks = paginator.page(1)
-        except EmptyPage:
-            tasks = paginator.page(paginator.num_pages)
-
-        context['patients'] = tasks
-        context['patientTabActive'] = True
-        context['total'] = patient_list.count()
-
-        return context
 
 
 
@@ -340,10 +261,197 @@ class UpdatePatientView(LoginRequired, AuthorshipRequired, UpdateView):
 
 #*******************delete Patient******************************************************************
 
-class DeleteTaskView(LoginRequired, AuthorshipRequired, DeleteView):
+class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
     template_name = 'patients/delete_patient.html'
     model = Patient
     pk_url_kwarg = 'patientid'
 
     def get_success_url(self):
         return reverse_lazy('view_patients')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#*******************show study******************************************************************
+
+
+def studyDetails(request,studyid):
+    study = get_object_or_404(Study, id=studyid)
+    context={'study':study}
+
+    context['PatientTabActive'] = True
+    
+
+    return render(request, 'studies/view_study.html', context)
+
+
+#*******************Update study******************************************************************
+class UpdateStudyView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'studies/edit_study.html'
+    model = Study
+    pk_url_kwarg = 'studyid'
+    fields = ['name','narrative_name','status']
+
+    def get_success_url(self):
+        study = self.get_object()
+        return reverse('studyDetails', kwargs={'studyid': study.pk})
+
+
+#*******************delete stduy******************************************************************
+
+class DeleteStudyView(LoginRequired, AuthorshipRequired, DeleteView):
+    template_name = 'studies/delete_study.html'
+    model = Study
+    pk_url_kwarg = 'studyid'
+
+    def get_success_url(self):
+        return reverse_lazy('view_studies')
+
+
+#methods and classes for studies
+
+class CreateStudyView(LoginRequired, CreateView):
+    template_name = 'studies/create_study.html'
+    model = Study
+    fields = ['name', 'narrative_name','status']
+
+    def form_valid(self, form):
+        # form.instance.age = age(form.instance.dob)
+        # form.instance.createdby_email = self.request.user.email
+        # form.instance.assignto_email = self.get_email(form.instance.assignto)
+
+        return super(CreateStudyView, self).form_valid(form)
+
+
+
+    def get_email(self,username):
+        email = User.objects.get(username = username).email
+        return email
+
+    def get_success_url(self):
+        return reverse('home')
+
+
+
+
+
+class StudyIndexView(LoginRequired,ListView):
+    model = Study
+    context_object_name = 'questions'
+    template_name = 'home/studies.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(StudyIndexView, self).get_context_data(*args, **kwargs)
+        study_list = Study.objects.all().order_by('-id')
+        paginator = Paginator(study_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            studies = paginator.page(page)
+        except PageNotAnInteger:
+            studies = paginator.page(1)
+        except EmptyPage:
+            studies = paginator.page(paginator.num_pages)
+
+        context['allstudies'] = True
+        context['studies'] = studies
+        context['total'] = study_list.count()
+
+        return context
+
+
+
+
+class StudyView(StudyIndexView,LoginRequired):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(StudyIndexView, self).get_context_data(*args, **kwargs)
+        study_list = Study.objects.all()
+        paginator = Paginator(study_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            studies = paginator.page(page)
+        except PageNotAnInteger:
+            studies = paginator.page(1)
+        except EmptyPage:
+            studies = paginator.page(paginator.num_pages)
+
+        context['patients'] = studies
+        context['patientTabActive'] = True
+        context['total'] = study_list.count()
+
+        return context
