@@ -13,7 +13,7 @@ class LoginRequired(View):
 class AuthorshipRequired(View):
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
-        if obj.assignto != self.request.user:
-            raise PermissionDenied
+        # if request.user:
+        #     raise PermissionDenied
 
         return super(AuthorshipRequired, self).dispatch(request, *args, **kwargs)

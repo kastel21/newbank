@@ -20,7 +20,7 @@ class Study(models.Model):
 
 class Patient(models.Model):
     sex = [("Male","Male"),("Female","Female"),("n/a","n/a")]
-    _id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200) 
     dob = models.CharField(max_length=200)
     gender = models.CharField(choices=sex,max_length=10)

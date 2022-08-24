@@ -47,3 +47,10 @@ class TaskAdmin(admin.ModelAdmin):
             formfield.label_from_instance = lambda obj: f'{obj.first_name} ({obj.last_name})'
         return formfield
 
+class PatientAdmin(admin.ModelAdmin):
+    list_display = ('name','id','study','age')
+
+
+admin.site.register(Patient,PatientAdmin)
+
+
