@@ -12,6 +12,7 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('/add_patient',views.CreatePatientView.as_view(), name='add_patient'),
     path('/remove_patient',views.DeletePatientView.as_view(), name='remove_patient'),
+    path('/view_patients',views.PatientIndexView.as_view(), name='view_patients'),
 
 
     #**********************sample urls***********************************************

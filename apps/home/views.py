@@ -12,6 +12,7 @@ from django.urls import reverse
 from .mixins import LoginRequired, AuthorshipRequired
 from django.views.generic import CreateView, View, ListView, DetailView, UpdateView
 from .models import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required(login_url="/login/")
 def index(request):
@@ -46,23 +47,20 @@ def pages(request):
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
 
-# **************************patient view******************************************
+
 class CreatePatientView(LoginRequired, CreateView):
     template_name = 'patients/create_patient.html'
     model = Patient
     fields = ['name', 'gender','study','dob']
 
     def form_valid(self, form):
-        # form.instance.createdby = self.request.user
+        form.instance.age = age(form.instance.dob)
         # form.instance.createdby_email = self.request.user.email
         # form.instance.assignto_email = self.get_email(form.instance.assignto)
 
         return super(CreatePatientView, self).form_valid(form)
 
-    def get_form(self, obj=None, **kwargs):
-        form = super(CreatePatientView, self).get_form( obj, **kwargs)
-        form.base_fields['name'].label_from_instance = lambda inst: "{} {}".format(inst.dob, inst.name)
-        return form
+
 
     def get_email(self,username):
         email = User.objects.get(username = username).email
@@ -78,37 +76,3 @@ class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('home')
-
-
-# **************************sample view******************************************
-class CreateSampleView(LoginRequired, CreateView):
-    template_name = 'samples/create_sample.html'
-    model = Sample
-    fields = ['patient', 'study', 'type','date_of_archive']
-
-    def form_valid(self, form):
-        # form.instance.createdby = self.request.user
-        # form.instance.createdby_email = self.request.user.email
-        # form.instance.assignto_email = self.get_email(form.instance.assignto)
-
-        return super(CreateSampleView, self).form_valid(form)
-
-    def get_form(self, obj=None, **kwargs):
-        form = super(CreateSampleView, self).get_form( obj, **kwargs)
-        form.base_fields['study'].label_from_instance = lambda inst: "{} {}".format(inst.date_of_archive, inst.study)
-        return form
-
-    # def get_email(self,username):
-    #     email = User.objects.get(username = username).email
-    #     return email
-
-    def get_success_url(self):
-        return reverse('home')
-
-# class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
-#     template_name = 'patients/create_patient.html'
-#     model = Patient
-#     pk_url_kwarg = 'taskid'
-
-#     def get_success_url(self):
-#         return reverse_lazy('home')
