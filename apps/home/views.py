@@ -54,7 +54,7 @@ class CreatePatientView(LoginRequired, CreateView):
     fields = ['name', 'gender','study','dob']
 
     def form_valid(self, form):
-        form.instance.age = age(form.instance.dob)
+        form.instance.age = self.age(form.instance.dob)
         # form.instance.createdby_email = self.request.user.email
         # form.instance.assignto_email = self.get_email(form.instance.assignto)
 
@@ -68,6 +68,18 @@ class CreatePatientView(LoginRequired, CreateView):
 
     def get_success_url(self):
         return reverse('home')
+
+    def age(self,birthDate ):
+        from datetime import date
+        from datetime import datetime
+
+        dt_obj = datetime.strptime(birthDate.split("T")[0], '%y-%m/%d').date()
+
+        today = date.today()
+        age = today.year - dt_obj.year -((today.month, today.day) < (dt_obj.month, dt_obj.day))
+    
+        return age
+    
 
 class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
     template_name = 'patients/create_patient.html'
@@ -109,3 +121,137 @@ class CreateSampleView(LoginRequired, CreateView):
 
 #     def get_success_url(self):
 #         return reverse_lazy('home')
+
+
+
+class PatientIndexView(LoginRequired,ListView):
+    model = Patient
+    context_object_name = 'questions'
+    template_name = 'home/patients.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PatientIndexView, self).get_context_data(*args, **kwargs)
+        patient_list = Patient.objects.all().order_by('-_id')
+        paginator = Paginator(patient_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            patients = paginator.page(page)
+        except PageNotAnInteger:
+            patients = paginator.page(1)
+        except EmptyPage:
+            patients = paginator.page(paginator.num_pages)
+
+        context['allpatients'] = True
+        context['patients'] = patients
+        context['total'] = patient_list.count()
+
+        return context
+
+
+
+
+class PatientView(PatientIndexView,LoginRequired):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PatientIndexView, self).get_context_data(*args, **kwargs)
+        patient_list = Patient.objects.filter(Q( assignto = self.request.user) | Q(createdby=self.request.user) )
+        paginator = Paginator(patient_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            tasks = paginator.page(page)
+        except PageNotAnInteger:
+            tasks = paginator.page(1)
+        except EmptyPage:
+            tasks = paginator.page(paginator.num_pages)
+
+        context['patients'] = tasks
+        context['patientTabActive'] = True
+        context['total'] = patient_list.count()
+
+        return context
+
+
+
+#methods and classes for studies
+
+class CreateStudyView(LoginRequired, CreateView):
+    template_name = 'studies/create_study.html'
+    model = Study
+    fields = ['name', 'narrative_name']
+
+    def form_valid(self, form):
+        # form.instance.age = age(form.instance.dob)
+        # form.instance.createdby_email = self.request.user.email
+        # form.instance.assignto_email = self.get_email(form.instance.assignto)
+
+        return super(CreateStudyView, self).form_valid(form)
+
+
+
+    def get_email(self,username):
+        email = User.objects.get(username = username).email
+        return email
+
+    def get_success_url(self):
+        return reverse('home')
+
+class DeleteStudyView(LoginRequired, AuthorshipRequired, DeleteView):
+    template_name = 'patients/create_patient.html'
+    model = Patient
+    pk_url_kwarg = 'taskid'
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+
+class StudyIndexView(LoginRequired,ListView):
+    model = Study
+    context_object_name = 'questions'
+    template_name = 'home/studies.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(StudyIndexView, self).get_context_data(*args, **kwargs)
+        study_list = Study.objects.all().order_by('-_id')
+        paginator = Paginator(study_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            studies = paginator.page(page)
+        except PageNotAnInteger:
+            studies = paginator.page(1)
+        except EmptyPage:
+            studies = paginator.page(paginator.num_pages)
+
+        context['allstudies'] = True
+        context['studies'] = studies
+        context['total'] = study_list.count()
+
+        return context
+
+
+
+
+class StudyView(PatientIndexView,LoginRequired):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PatientIndexView, self).get_context_data(*args, **kwargs)
+        patient_list = Patient.objects.filter(Q( assignto = self.request.user) | Q(createdby=self.request.user) )
+        paginator = Paginator(patient_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            tasks = paginator.page(page)
+        except PageNotAnInteger:
+            tasks = paginator.page(1)
+        except EmptyPage:
+            tasks = paginator.page(paginator.num_pages)
+
+        context['patients'] = tasks
+        context['patientTabActive'] = True
+        context['total'] = patient_list.count()
+
+        return context
+
