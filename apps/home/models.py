@@ -20,6 +20,9 @@ class Patient(models.Model):
     name = models.CharField(max_length=200) 
     dob = models.CharField(max_length=200)
     gender = models.CharField(choices=sex,max_length=10)
+    phone = models.CharField(max_length=20, default="0783872345")
+    age = models.CharField(max_length=20, default="1")
+
     study = models.ForeignKey(Study, on_delete=models.CASCADE, default=1)
     def __str__(self) -> str:
         return self.name
