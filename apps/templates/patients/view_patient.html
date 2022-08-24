@@ -1,0 +1,40 @@
+{% extends 'mbase.html' %}
+{% load humanize %}
+
+{% block title %}{{task.name}} detail | TaskManagement{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            {% if task %}
+                <h3><b>Task Name: </b>{{task.name}}</h3><hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <small><b>Created by: </b>{{task.createdby | capfirst}} {{task.dateCreated | naturaltime}}</small><br>
+                    <h4><small><b>Last Updated: </b> {{task.dateUpdated|naturaltime}}</h4><br>
+                    <h4><small><b>Task Owner: </b> {{task.assignto|capfirst}}</h4>
+
+                    </div>
+                    {% if task.assignto == request.user %}
+                    <div class="col-md-3">
+                        <a href="{% url 'editTask' task.id %}" class="btn btn-primary pull-right">Update This Task </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'deleteTask' task.id %}" class="btn btn-danger pull-right">Delete This Task</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <h3><b>Description:</b></h3>
+                <p>{{task.description | safe}}</p>
+                <h3><b>Status:</b></h3>
+                <p>{{task.status | safe}}</p>
+                <h3><b>Due:</b></h3>
+                <p>{{task.duedate | safe}}</p>
+
+            {% else %}
+                <h3>Not available</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
