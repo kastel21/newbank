@@ -67,7 +67,7 @@ class Sample(models.Model):
     _id = models.CharField(primary_key=True, max_length=200)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
-    date_of_archive = models.DateField(null=False)
+    date_of_archive = models.CharField(max_length=200)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     def __str__(self) -> str:
         return self._id
