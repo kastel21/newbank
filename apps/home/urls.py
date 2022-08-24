@@ -16,9 +16,12 @@ urlpatterns = [
 
 
     path('/view_studies',views.StudyIndexView.as_view(), name='view_studies'),
+
     #**********************sample urls***********************************************
-    # path('/add_sample',views.CreateSampleView.as_view(), name='add_sample'),
-    # path('/remove_patient',views.DeletePatientView.as_view(), name='remove_patient'),
+    path('/add_sample',views.CreateSampleView.as_view(), name='add_sample'),
+    path('/remove_sample',views.DeleteSampleView.as_view(), name='remove_sample'),
+    path('/view_sample',views.SampleIndexView.as_view(), name='view_sample'),
+
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),

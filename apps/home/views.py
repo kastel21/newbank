@@ -102,10 +102,10 @@ class CreateSampleView(LoginRequired, CreateView):
 
         return super(CreateSampleView, self).form_valid(form)
 
-    def get_form(self, obj=None, **kwargs):
-        form = super(CreateSampleView, self).get_form( obj, **kwargs)
-        form.base_fields['study'].label_from_instance = lambda inst: "{} {}".format(inst.date_of_archive, inst.study)
-        return form
+    # def get_form(self, obj=None, **kwargs):
+    #     form = super(CreateSampleView, self).get_form( obj, **kwargs)
+    #     form.base_fields['study'].label_from_instance = lambda inst: "{} {}".format(inst.date_of_archive, inst.study)
+    #     return form
 
     # def get_email(self,username):
     #     email = User.objects.get(username = username).email
@@ -114,15 +114,61 @@ class CreateSampleView(LoginRequired, CreateView):
     def get_success_url(self):
         return reverse('home')
 
-# class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
-#     template_name = 'patients/create_patient.html'
-#     model = Patient
-#     pk_url_kwarg = 'taskid'
+class DeleteSampleView(LoginRequired, AuthorshipRequired, DeleteView):
+    template_name = 'samples/create_samples.html'
+    model = Sample
+    pk_url_kwarg = 'taskid'
 
-#     def get_success_url(self):
-#         return reverse_lazy('home')
+    def get_success_url(self):
+        return reverse_lazy('home')
 
 
+# ************************SampleIndexView************************************************************************
+class SampleIndexView(LoginRequired,ListView):
+    model = Sample
+    context_object_name = 'questions'
+    template_name = 'home/samples.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SampleIndexView, self).get_context_data(*args, **kwargs)
+        sample_list = Sample.objects.all().order_by('-_id')
+        paginator = Paginator(sample_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            samples = paginator.page(page)
+        except PageNotAnInteger:
+            samples = paginator.page(1)
+        except EmptyPage:
+            samples = paginator.page(paginator.num_pages)
+
+        context['allsamples'] = True
+        context['samples'] = samples
+        context['total'] = sample_list.count()
+
+        return context
+
+class SampleView(SampleIndexView,LoginRequired):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SampleIndexView, self).get_context_data(*args, **kwargs)
+        sample_list = Sample.objects.filter(Q( assignto = self.request.user) | Q(createdby=self.request.user) )
+        paginator = Paginator(sample_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            tasks = paginator.page(page)
+        except PageNotAnInteger:
+            tasks = paginator.page(1)
+        except EmptyPage:
+            tasks = paginator.page(paginator.num_pages)
+
+        context['samples'] = tasks
+        context['sampleTabActive'] = True
+        context['total'] = sample_list.count()
+
+        return context
+# ************************************************************************************************
 
 class PatientIndexView(LoginRequired,ListView):
     model = Patient
