@@ -76,3 +76,36 @@ class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('home')
+
+# **************************sample view******************************************
+class CreateSampleView(LoginRequired, CreateView):
+    template_name = 'samples/create_sample.html'
+    model = Sample
+    fields = ['patient', 'study', 'type','date_of_archive']
+
+    def form_valid(self, form):
+        # form.instance.createdby = self.request.user
+        # form.instance.createdby_email = self.request.user.email
+        # form.instance.assignto_email = self.get_email(form.instance.assignto)
+
+        return super(CreateSampleView, self).form_valid(form)
+
+    def get_form(self, obj=None, **kwargs):
+        form = super(CreateSampleView, self).get_form( obj, **kwargs)
+        form.base_fields['study'].label_from_instance = lambda inst: "{} {}".format(inst.date_of_archive, inst.study)
+        return form
+
+    # def get_email(self,username):
+    #     email = User.objects.get(username = username).email
+    #     return email
+
+    def get_success_url(self):
+        return reverse('home')
+
+# class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
+#     template_name = 'patients/create_patient.html'
+#     model = Patient
+#     pk_url_kwarg = 'taskid'
+
+#     def get_success_url(self):
+#         return reverse_lazy('home')
