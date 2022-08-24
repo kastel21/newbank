@@ -71,13 +71,13 @@ class Box(models.Model):
 
 
 class Sample(models.Model):
-    _id = models.CharField(primary_key=True, max_length=200)
+    id = models.CharField(primary_key=True, max_length=100)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     date_of_archive = models.CharField(max_length=200)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        return self._id
+        return self.id
 
 class Cube(models.Model):
     _id = models.AutoField(primary_key=True)

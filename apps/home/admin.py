@@ -26,7 +26,7 @@ admin.site.register(Study,AuthorAdmin)
 # admin.site.register(Sample,AuthorAdmin)
 
 class Sample_Admin(admin.ModelAdmin):
-    list_display = ('_id','study','type','date_of_archive', 'patient')
+    list_display = ('study','id','type','date_of_archive', 'patient')
 admin.site.register(Sample, Sample_Admin)
 
 # class PatientAdmin(admin.ModelAdmin):
