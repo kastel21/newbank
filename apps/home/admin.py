@@ -26,7 +26,11 @@ admin.site.register(Study,AuthorAdmin)
 # admin.site.register(Sample,AuthorAdmin)
 
 class Sample_Admin(admin.ModelAdmin):
+<<<<<<< HEAD
     list_display = ('id','study','type','date_of_archive', 'patient')
+=======
+    list_display = ('study','id','type','date_of_archive', 'patient')
+>>>>>>> 2676a532b90341dc86777e32d7f9ed95f2c8c1fc
 admin.site.register(Sample, Sample_Admin)
 
 # class PatientAdmin(admin.ModelAdmin):
@@ -39,12 +43,20 @@ admin.site.register(Sample, Sample_Admin)
 # admin.site.register(Patient,PatientAdmin)
 
 # admin.site.register(Patient,AuthorAdmin)
+<<<<<<< HEAD
 
+=======
+# @admin.register(Patient)
+# class TaskAdmin(admin.ModelAdmin):
+#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+#         formfield = super().formfield_for_foreignkey(db_field, request, **kwargs)
+#         if db_field.name == "user":
+#             formfield.label_from_instance = lambda obj: f'{obj.first_name} ({obj.last_name})'
+#         return formfield
+>>>>>>> 2676a532b90341dc86777e32d7f9ed95f2c8c1fc
 
 class PatientAdmin(admin.ModelAdmin):
     list_display = ('name','id','study','age')
-
-
 admin.site.register(Patient,PatientAdmin)
 
 

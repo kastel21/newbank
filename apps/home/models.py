@@ -71,7 +71,8 @@ class Box(models.Model):
 
 
 class Sample(models.Model):
-    id = models.CharField(primary_key=True, max_length=200)
+
+    id = models.CharField(primary_key=True, max_length=100)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     date_of_archive = models.CharField(max_length=200)

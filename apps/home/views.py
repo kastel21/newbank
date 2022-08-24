@@ -134,7 +134,7 @@ class SampleIndexView(LoginRequired,ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SampleIndexView, self).get_context_data(*args, **kwargs)
-        sample_list = Sample.objects.all().order_by('-_id')
+        sample_list = Sample.objects.all().order_by('-id')
         paginator = Paginator(sample_list, 6)
 
         page = self.request.GET.get('page')
@@ -226,7 +226,35 @@ class PatientView(PatientIndexView,LoginRequired):
 
 
 
+#*******************show Sample******************************************************************
 
+def sampleDetails(request,sampleid):
+    sample = get_object_or_404(Sample, id=sampleid)
+    context={'sample':sample}
+    context['sampleTabActive'] = True
+    
+    return render(request, 'samples/view_sample.html', context)
+
+#*******************Update Sample******************************************************************
+class UpdateSampleView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'samples/edit_sample.html'
+    model = Sample
+    pk_url_kwarg = 'sampleid'
+    fields = ['study','type','date_of_archive','patient']
+
+    def get_success_url(self):
+        sample = self.get_object()
+        return reverse('sampleDetails', kwargs={'sampleid': sample.pk})
+
+#*******************delete Sample******************************************************************
+
+class DeleteSamplesView(LoginRequired, AuthorshipRequired, DeleteView):
+    template_name = 'samples/delete_samples.html'
+    model = Sample
+    pk_url_kwarg = 'samplesid'
+
+    def get_success_url(self):
+        return reverse_lazy('view_samples')
 
 
 
