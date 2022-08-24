@@ -14,6 +14,11 @@ urlpatterns = [
     path('/remove_patient',views.DeletePatientView.as_view(), name='remove_patient'),
     path('/view_patients',views.PatientIndexView.as_view(), name='view_patients'),
 
+
+
+
+    path('/view_studies',views.StudyIndexView.as_view(), name='view_studies'),
+
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
 

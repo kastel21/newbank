@@ -6,8 +6,12 @@ from django.contrib.auth.models import User
 
 
 class Study(models.Model):
+    statuses = [("On going","On going"),("Ended","Ended"),("n/a","n/a")]
+
     _id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
+    narrative_name= models.CharField(max_length=500, default="sadf asd fadfg arsg dvadhf dgjhbn")
+    status = models.CharField(choices=statuses,max_length=200, default="On going")
     # sample_id = models.ForeignKey(Sample, on_delete=models.CASCADE)
     # patient_id = models.ForeignKey(Patient, on_delete=models.CASCADE)
     def __str__(self) -> str:
