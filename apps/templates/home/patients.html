@@ -13,9 +13,7 @@
         <button onclick="location.href='{% url 'add_patient' %}' " class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
           <i class="fa fa-plus text-xs"> Add Patient</i>
         </button>
-        <button onclick="location.href='{% url 'remove_patient' %}' " class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-minus text-xs"> Remove Patient</i>
-        </button>
+
         <div class="card my-4">
           <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
@@ -60,9 +58,10 @@
                     <td class="align-middle text-center">
                       <span class="text-secondary text-xs font-weight-bold">{{task.study}}</span>
                     </td>
+   
                     <td class="align-middle">
-                      <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                        Edit
+                      <a href="{% url 'patientDetails' task.id %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                        View
                       </a>
                     </td>
                   </tr>

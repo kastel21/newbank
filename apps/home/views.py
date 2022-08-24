@@ -1,7 +1,4 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
+
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 from django import template
@@ -13,6 +10,12 @@ from .mixins import LoginRequired, AuthorshipRequired
 from django.views.generic import CreateView, View, ListView, DetailView, UpdateView
 from .models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
+
+
+
+
 
 @login_required(login_url="/login/")
 def index(request):
@@ -73,7 +76,7 @@ class CreatePatientView(LoginRequired, CreateView):
         from datetime import date
         from datetime import datetime
 
-        dt_obj = datetime.strptime(birthDate.split("T")[0], '%y-%m/%d').date()
+        dt_obj = datetime.strptime(birthDate.split("T")[0], '%Y-%m-%d').date()
 
         today = date.today()
         age = today.year - dt_obj.year -((today.month, today.day) < (dt_obj.month, dt_obj.day))
@@ -131,7 +134,7 @@ class PatientIndexView(LoginRequired,ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(PatientIndexView, self).get_context_data(*args, **kwargs)
-        patient_list = Patient.objects.all().order_by('-_id')
+        patient_list = Patient.objects.all().order_by('-id')
         paginator = Paginator(patient_list, 6)
 
         page = self.request.GET.get('page')
@@ -179,7 +182,7 @@ class PatientView(PatientIndexView,LoginRequired):
 class CreateStudyView(LoginRequired, CreateView):
     template_name = 'studies/create_study.html'
     model = Study
-    fields = ['name', 'narrative_name']
+    fields = ['name', 'narrative_name','status']
 
     def form_valid(self, form):
         # form.instance.age = age(form.instance.dob)
@@ -255,3 +258,46 @@ class StudyView(PatientIndexView,LoginRequired):
 
         return context
 
+
+
+
+
+
+
+
+#*******************show Patient******************************************************************
+
+
+def patientDetails(request,patientid):
+    patient = get_object_or_404(Patient, id=patientid)
+    context={'patient':patient}
+
+    context['PatientTabActive'] = True
+    
+
+
+
+    return render(request, 'patients/view_patient.html', context)
+
+
+#*******************Update Patient******************************************************************
+class UpdatePatientView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'patients/edit_patient.html'
+    model = Patient
+    pk_url_kwarg = 'patientid'
+    fields = ['name','phone','study','dob']
+
+    def get_success_url(self):
+        patient = self.get_object()
+        return reverse('patientDetails', kwargs={'patientid': patient.pk})
+
+
+#*******************delete Patient******************************************************************
+
+class DeleteTaskView(LoginRequired, AuthorshipRequired, DeleteView):
+    template_name = 'patients/delete_patient.html'
+    model = Patient
+    pk_url_kwarg = 'patientid'
+
+    def get_success_url(self):
+        return reverse_lazy('view_patients')
