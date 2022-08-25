@@ -104,7 +104,7 @@ class CreateSampleView(LoginRequired, CreateView):
 
         now = datetime.now()
         date_time = now.strftime("%m%d%Y,%H:%M:%S")
-        form.instance.name =date_time.replace(",","T").replace(":","")
+        form.instance.name =form.instance.patient.name+"-"+date_time.replace(",","T").replace(":","")
         # form.instance.createdby_email = self.request.user.email
         # form.instance.assignto_email = self.get_email(form.instance.assignto)
 
@@ -516,30 +516,76 @@ class StudyView(StudyIndexView,LoginRequired):
 
 
 
+def get_free_cubes_for_aliquote():
+    cubes = Cube.objects.filter(occupied=False).order_by('id')
+    c = []
+    for i in cubes:
+        
+        if len(c) == 0:
+            c.append(i)
+        elif len(c) == 1:
+            c.append(i)
+        elif len(c) == 2:
+            c.append(i)
+            break
 
-#*******************show study******************************************************************
+
+    return cubes
+
+#*******************aliquote sample******************************************************************
+def get_free_cubes():
+    cubes = Cube.objects.filter(occupied=False).order_by('id')
+    return cubes
 
 
-def studyDetails(request,studyid):
-    study = get_object_or_404(Study, id=studyid)
-    context={'study':study}
+def get_current_date_time():
+        from datetime import datetime
 
-    context['PatientTabActive'] = True
+        now = datetime.now()
+        date_time = now.strftime("%m%d%Y,%H:%M:%S")
+        return date_time.replace(",","T").replace(":","")
+
+def sample_aliquoteDetails(request,sampleid):
+    sample = get_object_or_404(Sample, id=sampleid)
+    aliquotes = []
+    for cube in get_free_cubes_for_aliquote():
+        a_s = Sample_Aliquote(name = sample.name+"_aliquote", date_of_archive = get_current_date_time(), sample= sample)
+        a_s.save()
+        aliquotes.append(a_s)
+
+
+
+
+    context={'sample_Aliquote':aliquotes}
+
+    context['AliquoteTabActive'] = True
     
 
-    return render(request, 'studies/view_study.html', context)
+    return render(request, 'samples/view_sample_aliquote.html', context)
+
+#*******************show cube******************************************************************
 
 
-#*******************Update study******************************************************************
-class UpdateStudyView(LoginRequired, AuthorshipRequired, UpdateView):
-    template_name = 'studies/edit_study.html'
-    model = Study
-    pk_url_kwarg = 'studyid'
-    fields = ['name','narrative_name','status']
+def cubeDetails(request,cubeid):
+    cube = get_object_or_404(Cube, id=cubeid)
+    context={'cube':cube}
+
+    context['CubeTabActive'] = True
+    
+
+    return render(request, 'cubes/view_cube.html', context)
+
+
+#*******************Update cube******************************************************************
+class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'cubes/edit_cube.html'
+    model = Cube
+    pk_url_kwarg = 'cubeid'
+    fields = ['occupied','sample']
 
     def get_success_url(self):
-        study = self.get_object()
-        return reverse('studyDetails', kwargs={'studyid': study.pk})
+        cube = self.get_object()
+        return reverse('home', kwargs={'cubeid': cube.pk})
 
 
 
@@ -554,26 +600,26 @@ class UpdateStudyView(LoginRequired, AuthorshipRequired, UpdateView):
 
 
 class CubeIndexView(LoginRequired,ListView):
-    model = Study
+    model = Cube
     context_object_name = 'questions'
     template_name = 'home/index.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(CubeIndexView, self).get_context_data(*args, **kwargs)
-        study_list = Cube.objects.all().order_by('-id')
-        paginator = Paginator(study_list, 6)
+        cube_list = Cube.objects.all().order_by('-id')
+        paginator = Paginator(cube_list, 6)
 
         page = self.request.GET.get('page')
         try:
-            studies = paginator.page(page)
+            cubes = paginator.page(page)
         except PageNotAnInteger:
-            studies = paginator.page(1)
+            cubes = paginator.page(1)
         except EmptyPage:
-            studies = paginator.page(paginator.num_pages)
+            cubes = paginator.page(paginator.num_pages)
 
-        context['allstudies'] = True
-        context['cubes'] = studies
-        context['total'] = study_list.count()
+        context['allcubes'] = True
+        context['cubes'] = cubes
+        context['total'] = cube_list.count()
 
         return context
 
@@ -596,7 +642,7 @@ class CubeView(CubeIndexView,LoginRequired):
             studies = paginator.page(paginator.num_pages)
 
         context['cubes'] = studies
-        context['patientTabActive'] = True
+        context['cubeTabActive'] = True
         context['total'] = study_list.count()
 
         return context

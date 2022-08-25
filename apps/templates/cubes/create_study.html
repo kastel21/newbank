@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Create New Study | Bank {% endblock %}
+
+{% block content %}
+<style>
+    input[type=text] {
+  border: 2px solid rgb(37, 35, 35);
+  border-radius: 4px;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<div class="container-fluid py-4" >
+    <div class="row">
+      <div class="col-12">
+    <h2>Add New Study!</h2><hr>
+    <form method="post" id="myform">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <!-- <label for="birthdaytime">Due Date:</label> -->
+
+        <!-- <input style="margin-bottom: 2%;" type="datetime-local" id="birthdaytime" class="form-control" name="birthdaytime"> -->
+
+  <div style="margin-top: 5%;"class="form-group">
+    <input type="submit" value="Save" class="btn btn-success"/>
+</div>
+  </form>
+
+
+</div>
+</div>
+</div>
+{%block js%}
+
+<script>
+
+
+
+
+$(document).ready(function() {
+
+
+    $("#birthdaytime").focusout(function(){
+    
+        hh = $('#birthdaytime').val();
+
+        $(':input[name$=dob]').val(hh);
+  });
+
+
+        // $('#birthdaytime').datepicker({
+        //     onClose: function(dateText, inst) {
+
+        //         hh = $('#birthdaytime').val();
+        //         alert("hello");
+
+        //         $(':input[name$=dob]').val(hh);
+
+
+
+        //     }
+        // });
+    });
+
+
+// $(':input[name$=dob]').prop( "disabled", true );
+
+    // function sub(){
+
+    //     document.getElementById("myform").submit();
+    // }
+
+
+// const url = "https://lorkastem.co.zw/getTableData";
+// current_url = window.location.href;
+// arr = current_url.split("/")
+// case_id = arr.at(-1)
+// month_id =arr[arr.length - 2]
+
+// //alert(case_id);
+// const data = {
+//     "case_id":case_id,
+//     "month_id":month_id,
+//     id:'1'
+// }
+
+// $.post(url,data, function(data,status){
+//     console.log(data);
+
+// });
+
+
+
+</script>
+
+{%endblock js%}
+
+
+{% endblock %}

@@ -6,33 +6,26 @@
 {% block content %}
     <div style="margin-left: 5%;" class="row">
         <div class="col-md-offset-2 col-md-8">
-            {% if sample %}
-                <h3><b>Patient Name: </b>{{sample.patient}}</h3><hr>
+            {% if sample_Aliquote %}
+                <h3><b>Patient Name: </b>{{sample_Aliquote.sample.patient}}</h3><hr>
                 <div class="row">
                     <div class="col-md-6">
                     <!-- <h4><small><b>Gender: </b> {{sample.gender|capfirst}}</h4><br> -->
-                    <h4><small><b>Date archived: </b> {{sample.date_of_archive}}</h4>
-                        <h4><small><b>Type: </b> {{sample.type}}</h4>
-                            <h4><small><b>Study: </b> {{sample.study}}</h4>
+                    <h4><small><b>Date archived: </b> {{sample_Aliquote.date_of_archive}}</h4>
+                        <h4><small><b>Type: </b> {{sample_Aliquote.sample.type}}</h4>
+                            <h4><small><b>Study: </b> {{sample_Aliquote.sample.study}}</h4>
 
                     </div>
 
                 </div>
         <div style="margin-top: 15%;" class="row">
                         <div class="col-md-3">
-                                        <a href="{% url 'edit_sample' sample.id %}" class="btn btn-primary pull-right">Update sample </a>
+                                        <a href="#" class="btn btn-primary pull-right">Update This sample </a>
                                     </div>
                                     <div class="col-md-3">
-                                        <a href="{% url 'remove_sample' sample.id %}" class="btn btn-danger pull-right">Delete  ample</a>
+                                        <a href="#" class="btn btn-danger pull-right">Delete This sample</a>
                                     </div>
-                                    <div class="col-md-3">
-                                        <a href="{% url 'aliquote_sample' sample.id %}" class="btn btn-danger pull-right">Aliquote sample</a>
-                                    </div>
-    
-    
-                                    <div class="col-md-3">
-                                        <a href="{% url 'aliquote_sample' sample.id %}" class="btn btn-danger pull-right"> Sample Aliquotes </a>
-                                    </div>
+
 
             </div>
 

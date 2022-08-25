@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Edit Study | Bank{% endblock %}
+
+{% block content %}
+<style>
+    input[type=text] {
+  border: 2px solid rgb(37, 35, 35);
+  border-radius: 4px;
+}
+</style>
+<div style="margin-left: 5%;" class="col-md-offset-2 col-md-8">
+    <h2>Edit Your Study!</h2><hr>
+    <form method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Update</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

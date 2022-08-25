@@ -9,7 +9,7 @@ from apps.home import views
 urlpatterns = [
 
     # The home page
-    path('', views.index, name='home'),
+    path('', views.CubeIndexView.as_view(), name='home'),
 
     #**********************patient urls***********************************************
     re_path(r'^(?P<patientid>\d+)/detail/$',views.patientDetails, name='patientDetails'),
@@ -29,8 +29,10 @@ urlpatterns = [
     path('/remove_sample',views.DeleteSampleView.as_view(), name='remove_sample'),
     path('/view_sample',views.SampleIndexView.as_view(), name='view_sample'),
     re_path(r'^(?P<sampleid>\d+)/detail_sample/$',views.sampleDetails, name='sampleDetails'),
-    re_path(r'^(?P<patientid>\d+)/edit_sample/$',views.UpdateSampleView.as_view(), name='edit_sample'),
-    re_path(r'^(?P<patientid>\d+)/delete_sample/$',views.DeleteSamplesView.as_view(), name='remove_sample'),
+    re_path(r'^(?P<sampleid>\d+)/edit_sample/$',views.UpdateSampleView.as_view(), name='edit_sample'),
+    re_path(r'^(?P<sampleid>\d+)/delete_sample/$',views.DeleteSamplesView.as_view(), name='remove_sample'),
+    re_path(r'^(?P<sampleid>\d+)/aliquote_sample/$',views.sample_aliquoteDetails, name='aliquote_sample'),
+
 
     
 
@@ -52,6 +54,17 @@ urlpatterns = [
     re_path(r'^(?P<stduyid>\d+)/delete_study/$',views.DeleteStudyView.as_view(), name='remove_study'),
 
 
+
+
+
+
+        #**********************cube urls***********************************************
+
+    re_path(r'^(?P<cubeid>\d+)/details_cube/$',views.cubeDetails, name='cubeDetails'),
+    # path('/add_study',views.CreateStudyView.as_view(), name='add_study'),
+    re_path('view_cubes',views.CubeIndexView.as_view(), name='view_cubes'),
+    re_path(r'^(?P<cubeid>\d+)/edit_cube/$',views.UpdateCubeView.as_view(), name='edit_cube'),
+    re_path(r'^(?P<cubeid>\d+)/reset_cube/$',views.DeleteStudyView.as_view(), name='reset_cube'),
 
 
 ]

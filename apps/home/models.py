@@ -80,13 +80,20 @@ class Sample(models.Model):
     name = models.CharField(max_length=100)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
-    # box = models.ForeignKey(Cube, on_delete=models.CASCADE, null=True)
+    aliquoted = models.BooleanField(default=False)
     date_of_archive = models.CharField(max_length=200)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        return self.id
+        return self.name
 
+class Sample_Aliquote(models.Model):
 
+    # id = models.CharField(primary_key=True,max_length=100)
+    name = models.CharField(max_length=100)
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE, null=False)
+    date_of_archive = models.CharField(max_length=200)
+    def __str__(self) -> str:
+        return self.main_sample.name+"_aliquote"
 
 class Cube(models.Model):
     id = models.AutoField(primary_key=True)

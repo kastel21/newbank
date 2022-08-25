@@ -1,0 +1,45 @@
+{% extends 'layouts/base.html' %}
+{% load humanize %}
+
+{% block title %}Study detail | Bank{% endblock %}
+
+{% block content %}
+    <div style="margin-left: 6%;" class="row">
+        <div class="col-md-offset-2 col-md-8">
+            {% if cube %}
+            <h3><b>Cube Name: </b>{{cube.name}}</h3><hr>
+            <div class="row">
+                <div class="col-md-6">
+                <h4><small><b>Location: </b> {{cube.box|capfirst}}</h4><br>
+                <h4><small><b>Occupied: </b> {{cube.occupied}}</h4>
+                    {% if cube.occupied %}
+                <h4><small><b>Sample: </b> {{cube.sample}}</h4>
+                    {% endif %}
+                        <!--h4><small><b>Study: </b> {{patient.study}}</h4> -->
+
+                </div>
+
+            </div>
+    <div style="margin-top: 15%;" class="row">
+                    <div class="col-md-3">
+                                    <a href="{% url 'edit_cube' cube.id %}" class="btn btn-primary pull-right">Update  Cube </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{% url 'reset_cube' cube.id %}" class="btn btn-danger pull-right">Reset  Cube</a>
+                                </div>
+        </div>
+
+            <!-- <h3><b>Description:</b></h3>
+            <p>{{task.description | safe}}</p>
+            <h3><b>Status:</b></h3>
+            <p>{{task.status | safe}}</p>
+            <h3><b>Due:</b></h3>
+            <p>{{task.duedate | safe}}</p> -->
+
+
+            {% else %}
+                <h3>Not available</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
