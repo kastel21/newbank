@@ -99,7 +99,12 @@ class CreateSampleView(LoginRequired, CreateView):
     fields = ['patient', 'study', 'type','date_of_archive']
 
     def form_valid(self, form):
-        # form.instance.createdby = self.request.user
+        
+        from datetime import datetime
+
+        now = datetime.now()
+        date_time = now.strftime("%m%d%Y,%H:%M:%S")
+        form.instance.name =date_time.replace(",","T").replace(":","")
         # form.instance.createdby_email = self.request.user.email
         # form.instance.assignto_email = self.get_email(form.instance.assignto)
 
@@ -171,6 +176,10 @@ class SampleView(SampleIndexView,LoginRequired):
         context['total'] = sample_list.count()
 
         return context
+
+
+
+
 # ************************************************************************************************
 
 class PatientIndexView(LoginRequired,ListView):
@@ -479,6 +488,114 @@ class StudyView(StudyIndexView,LoginRequired):
             studies = paginator.page(paginator.num_pages)
 
         context['patients'] = studies
+        context['patientTabActive'] = True
+        context['total'] = study_list.count()
+
+        return context
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#*******************show study******************************************************************
+
+
+def studyDetails(request,studyid):
+    study = get_object_or_404(Study, id=studyid)
+    context={'study':study}
+
+    context['PatientTabActive'] = True
+    
+
+    return render(request, 'studies/view_study.html', context)
+
+
+#*******************Update study******************************************************************
+class UpdateStudyView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'studies/edit_study.html'
+    model = Study
+    pk_url_kwarg = 'studyid'
+    fields = ['name','narrative_name','status']
+
+    def get_success_url(self):
+        study = self.get_object()
+        return reverse('studyDetails', kwargs={'studyid': study.pk})
+
+
+
+
+
+
+
+
+
+
+
+
+
+class CubeIndexView(LoginRequired,ListView):
+    model = Study
+    context_object_name = 'questions'
+    template_name = 'home/index.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CubeIndexView, self).get_context_data(*args, **kwargs)
+        study_list = Cube.objects.all().order_by('-id')
+        paginator = Paginator(study_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            studies = paginator.page(page)
+        except PageNotAnInteger:
+            studies = paginator.page(1)
+        except EmptyPage:
+            studies = paginator.page(paginator.num_pages)
+
+        context['allstudies'] = True
+        context['cubes'] = studies
+        context['total'] = study_list.count()
+
+        return context
+
+
+
+
+class CubeView(CubeIndexView,LoginRequired):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CubeIndexView, self).get_context_data(*args, **kwargs)
+        study_list = Cube.objects.all()
+        paginator = Paginator(study_list, 6)
+
+        page = self.request.GET.get('page')
+        try:
+            studies = paginator.page(page)
+        except PageNotAnInteger:
+            studies = paginator.page(1)
+        except EmptyPage:
+            studies = paginator.page(paginator.num_pages)
+
+        context['cubes'] = studies
         context['patientTabActive'] = True
         context['total'] = study_list.count()
 

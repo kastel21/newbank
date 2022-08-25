@@ -52,4 +52,22 @@ class PatientAdmin(admin.ModelAdmin):
     list_display = ('name','id','study','age')
 admin.site.register(Patient,PatientAdmin)
 
+class FreezerAdmin(admin.ModelAdmin):
+    list_display = ('name','id','capacity')
+admin.site.register(Freezer,FreezerAdmin)
 
+class RackAdmin(admin.ModelAdmin):
+    list_display = ('shelf','name','capacity')
+admin.site.register(Rack,RackAdmin)
+
+class ShelfAdmin(admin.ModelAdmin):
+    list_display = ('freezer','name','capacity')
+admin.site.register(Shelf,ShelfAdmin)
+
+class CubeAdmin(admin.ModelAdmin):
+    list_display = ('box','name')
+admin.site.register(Cube,CubeAdmin)
+
+class BoxAdmin(admin.ModelAdmin):
+    list_display = ('rack','name','capacity')
+admin.site.register(Box,BoxAdmin)
