@@ -26,13 +26,14 @@ urlpatterns = [
 
     #**********************sample urls***********************************************
     path('/add_sample',views.CreateSampleView.as_view(), name='add_sample'),
-    path('/remove_sample',views.DeleteSampleView.as_view(), name='remove_sample'),
+    # path('/remove_sample',views.DeleteSampleView.as_view(), name='remove_sample'),
     path('/view_sample',views.SampleIndexView.as_view(), name='view_sample'),
     re_path(r'^(?P<sampleid>\d+)/detail_sample/$',views.sampleDetails, name='sampleDetails'),
     re_path(r'^(?P<sampleid>\d+)/edit_sample/$',views.UpdateSampleView.as_view(), name='edit_sample'),
-    re_path(r'^(?P<sampleid>\d+)/delete_sample/$',views.DeleteSamplesView.as_view(), name='remove_sample'),
+    #re_path(r'^(?P<sampleid>\d+)/delete_sample/$',views.DeleteSamplesView.as_view(), name='remove_sample'),
+    re_path(r'^(?P<sampleid>\d+)/delete_sample/$',views.deletesample, name='remove_sample'),
     re_path(r'^(?P<sampleid>\d+)/aliquote_sample/$',views.sample_aliquoteDetails, name='aliquote_sample'),
-
+    
 
     
 

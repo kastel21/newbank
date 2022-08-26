@@ -1,5 +1,6 @@
 
 from django.views.generic.edit import DeleteView
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django import template
 from django.contrib.auth.decorators import login_required
@@ -258,15 +259,21 @@ class UpdateSampleView(LoginRequired, AuthorshipRequired, UpdateView):
 #*******************delete Sample******************************************************************
 
 class DeleteSamplesView(LoginRequired, AuthorshipRequired, DeleteView):
-    template_name = 'samples/delete_samples.html'
+    template_name = 'samples/delete_sample.html'
     model = Sample
-    pk_url_kwarg = 'samplesid'
+    pk_url_kwarg = 'sampleid'
+    fields = ['study','type','date_of_archive','patient','in_storage']
 
     def get_success_url(self):
-        return reverse_lazy('view_samples')
+        sample = self.get_object()
+        return reverse('sampleDetails', kwargs={'sampleid': sample.pk})
 
-
-
+def deletesample(request,sampleid):
+    b = Sample.objects.get(pk=sampleid)
+    b.in_storage = True
+    b.save()
+    context={}
+    return render(request, 'samples/success.html', context)
 
 
 #*******************show Patient******************************************************************

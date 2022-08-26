@@ -29,6 +29,7 @@
                   <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sample Name</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sample date of archive</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Study</th>
                     <th class="text-secondary opacity-7"></th>
@@ -54,7 +55,10 @@
                         <p class="text-xs text-secondary mb-0">{{task.patient}}</p>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">{{task.type}}</span>
+                        <span class="badge badge-sm bg-gradient-success">{% if task.in_storage == True %}Deleted {% else %} Available {% endif %}</span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-secondary text-xs font-weight-bold">{{task.type}}</span>
                       </td>
                       <td class="align-middle text-center">
                         <span class="text-secondary text-xs font-weight-bold">{{task.study}}</span>
