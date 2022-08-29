@@ -99,6 +99,8 @@ class CreateSampleView(LoginRequired, CreateView):
     model = Sample
     fields = ['patient', 'study', 'type','date_of_archive']
 
+
+
     def form_valid(self, form):
         
         from datetime import datetime
@@ -202,6 +204,8 @@ class PatientIndexView(LoginRequired,ListView):
             patients = paginator.page(paginator.num_pages)
 
         context['allpatients'] = True
+        context['samples'] = False
+        context['studies'] = False
         context['patients'] = patients
         context['total'] = patient_list.count()
 
@@ -262,7 +266,7 @@ class DeleteSamplesView(LoginRequired, AuthorshipRequired, DeleteView):
     template_name = 'samples/delete_sample.html'
     model = Sample
     pk_url_kwarg = 'sampleid'
-    fields = ['study','type','date_of_archive','patient','in_storage']
+    fields = ['study','type','date_of_archive','patient','delete']
 
     def get_success_url(self):
         sample = self.get_object()
@@ -645,3 +649,49 @@ class CubeView(CubeIndexView,LoginRequired):
         context['total'] = study_list.count()
 
         return context
+
+
+
+
+
+# **************************sample view******************************************
+class StoreSampleView(LoginRequired, CreateView):
+    template_name = 'samples/create_sample.html'
+    model = Sample
+    fields = ['patient', 'study', 'type','date_of_archive']
+
+    def form_valid(self, form):
+        
+        from datetime import datetime
+
+        now = datetime.now()
+        date_time = now.strftime("%m%d%Y,%H:%M:%S")
+        form.instance.name =form.instance.patient.name+"-"+date_time.replace(",","T").replace(":","")
+        # form.instance.createdby_email = self.request.user.email
+        # form.instance.assignto_email = self.get_email(form.instance.assignto)
+
+        return super(CreateSampleView, self).form_valid(form)
+
+    # def get_form(self, obj=None, **kwargs):
+    #     form = super(CreateSampleView, self).get_form( obj, **kwargs)
+    #     form.base_fields['study'].label_from_instance = lambda inst: "{} {}".format(inst.date_of_archive, inst.study)
+    #     return form
+
+    # def get_email(self,username):
+    #     email = User.objects.get(username = username).email
+    #     return email
+
+    def get_success_url(self):
+        return reverse('home')
+
+
+#*******************Update cube******************************************************************
+class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'cubes/edit_cube.html'
+    model = Cube
+    pk_url_kwarg = 'cubeid'
+    fields = ['occupied','sample']
+
+    def get_success_url(self):
+        cube = self.get_object()
+        return reverse('home', kwargs={'cubeid': cube.pk})
