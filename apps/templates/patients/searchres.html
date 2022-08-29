@@ -1,0 +1,56 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tables {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+ {% if searched %}
+    <h1>Search Results for {{searched}}</h1>
+    <br>
+    <table style="width: 100%">
+        <table class="table table-sm">
+   <thead>
+        <th></th>
+        <th>Employee Name</th>
+        <th>Prgram Code</th>
+        <th>Location</th>
+        <th>Month</th>
+        <th>Year</th>
+    </thead>
+
+        {% for x in search %}
+
+        <tbody class="table table-sm">
+        <tbody class="table table-sm">
+    <form method="POST" id="myForm" action="empview">
+
+    {% csrf_token %}
+        <td  style='display:none;'> <input type='text' name="id" value={{x.id }}></td>
+
+        <td> <input type='submit' id='mybtn' value={{x.name }} >    </td>
+        </form>
+
+        <!--<td><a href='#' onclick='sub()' ></a> </td>-->
+        <td>{{x.date_of_archive}}</td>
+        <td>{{x.patient }}</td>
+        <td>{{x.name }}</td>
+        <td>{{x.study}}</td>
+        <td>{{x.type }}</td>
+        <td>{{x.name }}</td>
+
+        </form>
+    </tbody>
+
+        {% endfor %}
+
+    </table>
+
+{% else %}
+    <h1>Nothing was searched, Please try again! Thank you</h1>
+ {% endif %}
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

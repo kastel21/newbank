@@ -318,25 +318,17 @@ class DeletePatientView(LoginRequired, AuthorshipRequired, DeleteView):
 
 
 
+#*******************Search Patient******************************************************************
+def search(request):
+    if request.method=="POST":
+        searched = request.POST.get('searched')
+        search = Sample.objects.filter(Q(date_of_archive__icontains=searched) | Q(patient__name__icontains=searched) |Q(name__icontains=searched) | Q(study__icontains=searched) | Q(type__icontains=searched))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        context = {'searched':searched, 'search':search}
+        return render(request, 'patients/searchres.html', context)
+    else:
+        context = {}
+        return render(request, 'patients/searchres.html', context)
 
 
 

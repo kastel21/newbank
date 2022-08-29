@@ -67,5 +67,8 @@ urlpatterns = [
     re_path(r'^(?P<cubeid>\d+)/edit_cube/$',views.UpdateCubeView.as_view(), name='edit_cube'),
     re_path(r'^(?P<cubeid>\d+)/reset_cube/$',views.DeleteStudyView.as_view(), name='reset_cube'),
 
+    #**********************Search urls***********************************************
+    path('search', views.search, name='search'),
+
 
 ]
