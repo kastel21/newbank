@@ -19,19 +19,22 @@
 
                 </div>
         <div style="margin-top: 15%;" class="row">
-                        <div class="col-md-3">
+                                     <div class="col-md-2">
                                         <a href="{% url 'edit_sample' sample.id %}" class="btn btn-primary pull-right">Update sample </a>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <a href="{% url 'remove_sample' sample.id %}" class="btn btn-danger pull-right">Delete  sample</a>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <a href="{% url 'aliquote_sample' sample.id %}" class="btn btn-danger pull-right">Aliquote sample</a>
                                     </div>
     
     
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <a href="{% url 'aliquote_sample' sample.id %}" class="btn btn-danger pull-right"> Sample Aliquotes </a>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="{% url 'aliquote_sample' sample.id %}" class="btn btn-danger pull-right">Store Sample </a>
                                     </div>
 
             </div>
