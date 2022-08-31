@@ -84,6 +84,8 @@ class Sample(models.Model):
     deleted = models.BooleanField(default=False)
     date_of_archive = models.CharField(max_length=200)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    allocated = models.BooleanField(default=False)
+
     def __str__(self) -> str:
         return self.name
 

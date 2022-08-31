@@ -601,7 +601,7 @@ class CubeForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CubeForm, self).__init__(*args, **kwargs)
         # access object through self.instance...
-        self.fields['sample'].queryset = Sample.objects.filter(occupied=False)
+        self.fields['sample'].queryset = Sample.objects.filter(allocated=False)
 
 
 #*******************Update cube******************************************************************
