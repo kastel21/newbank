@@ -85,6 +85,8 @@ class Sample(models.Model):
     date_of_archive = models.CharField(max_length=200)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     allocated = models.BooleanField(default=False)
+    cube = models.ForeignKey('Cube',related_name='myCube', on_delete=models.CASCADE,null=True, blank=True)
+
 
     def __str__(self) -> str:
         return self.name
@@ -105,7 +107,7 @@ class Cube(models.Model):
     # shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
     # freezer = models.ForeignKey(Freezer, on_delete=models.CASCADE)
     occupied = models.BooleanField(default=False)
-    sample = models.ForeignKey(Sample, blank=True,null=True,on_delete=models.CASCADE)
+    sample = models.ForeignKey(Sample, blank=True,null=True,on_delete=models.CASCADE,related_name='mySample')
     name = models.CharField(max_length=200, default="cube 1")
     def __str__(self) -> str:
         name = str(self.box)+"-"+str(self.name)

@@ -25,6 +25,9 @@ urlpatterns = [
 
 
     #**********************sample urls***********************************************
+    
+    re_path(r'^(?P<sampleid>\d+)/store_sample/$',views.StoreSampleView.as_view(), name='store_sample'),
+
     path('/add_sample',views.CreateSampleView.as_view(), name='add_sample'),
     # path('/remove_sample',views.DeleteSampleView.as_view(), name='remove_sample'),
     path('/view_sample',views.SampleIndexView.as_view(), name='view_sample'),
@@ -65,7 +68,7 @@ urlpatterns = [
     # path('/add_study',views.CreateStudyView.as_view(), name='add_study'),
     re_path('view_cubes',views.CubeIndexView.as_view(), name='view_cubes'),
     re_path(r'^(?P<cubeid>\d+)/edit_cube/$',views.UpdateCubeView.as_view(), name='edit_cube'),
-    re_path(r'^(?P<cubeid>\d+)/reset_cube/$',views.DeleteStudyView.as_view(), name='reset_cube'),
+    re_path(r'^(?P<cubeid>\d+)/reset_cube/$',views.ResetCubeView.as_view(), name='reset_cube'),
 
     #**********************Search urls***********************************************
     path('search', views.search, name='search'),

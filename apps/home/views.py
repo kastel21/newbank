@@ -613,21 +613,34 @@ class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
 
     def get_success_url(self):
         cube = self.get_object()
-        return reverse('home', kwargs={'cubeid': cube.pk})
+
+        sample = Sample.objects.get(pk = cube.sample.pk)
+        sample.allocated=True
+        sample.save()
+        cube.occupied= True
+        cube.save()
+
+        return reverse('home')
 
 
-
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super(UpdateCubeView, self).get_form(request, obj, **kwargs)
-    #     form.base_fields['sample'].queryset = Sample.objects.filter(deleted=True)
-    #     return form
-
-
-
+#*******************Update cube******************************************************************
+class ResetCubeView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'cubes/edit_cube.html'
+    model = Cube
+    pk_url_kwarg = 'cubeid'
+    fields = ()
 
 
+    def get_success_url(self):
+        cube = self.get_object()
 
+        sample = Sample.objects.get(pk = cube.sample.pk)
+        sample.allocated=False
+        sample.save()
+        cube.occupied= False
+        cube.save()
 
+        return reverse('home')
 
 
 
@@ -714,13 +727,23 @@ class StoreSampleView(LoginRequired, CreateView):
         return reverse('home')
 
 
-#*******************Update cube******************************************************************
-# class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
-#     template_name = 'cubes/edit_cube.html'
-#     model = Cube
-#     pk_url_kwarg = 'cubeid'
-#     fields = ['occupied','sample']
 
-#     def get_success_url(self):
-#         cube = self.get_object()
-#         return reverse('home', kwargs={'cubeid': cube.pk})
+
+
+class StoreSampleView(LoginRequired, AuthorshipRequired, UpdateView):
+    template_name = 'samples/store_sample.html'
+    model = Sample
+    pk_url_kwarg = 'sampleid'
+    fields = ('cube',)
+
+
+    def get_success_url(self):
+        sample = self.get_object()
+
+        cube = Cube.objects.get(pk = sample.cube.pk)
+        cube.occupied=True
+        cube.save()
+        sample.allocated= True
+        sample.save()
+
+        return reverse('view_sample')
