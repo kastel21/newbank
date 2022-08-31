@@ -27,6 +27,7 @@ admin.site.register(Study,AuthorAdmin)
 
 class Sample_Admin(admin.ModelAdmin):
     list_display = ('study','id','type','date_of_archive', 'patient')
+
 admin.site.register(Sample, Sample_Admin)
 
 # class PatientAdmin(admin.ModelAdmin):
@@ -66,8 +67,17 @@ admin.site.register(Shelf,ShelfAdmin)
 
 class CubeAdmin(admin.ModelAdmin):
     list_display = ('box','name')
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(CubeAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['sample'].queryset = Sample.objects.filter(deleted=True)
+        return form
+    # def render_change_form(self, request, context, *args, **kwargs):
+    #      context['adminform'].form.fields['theme'].queryset = Theme.objects.filter(name__iexact='company')
+    #      return super(CompanyAdmin, self).render_change_form(request, context, *args, **kwargs)
 admin.site.register(Cube,CubeAdmin)
 
 class BoxAdmin(admin.ModelAdmin):
     list_display = ('rack','name','capacity')
+
+
 admin.site.register(Box,BoxAdmin)

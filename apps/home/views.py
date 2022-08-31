@@ -73,7 +73,7 @@ class CreatePatientView(LoginRequired, CreateView):
     def get_success_url(self):
         return reverse('home')
 
-    def age(self,birthDate ):
+    def age(self,birthDate):
         from datetime import date
         from datetime import datetime
 
@@ -578,13 +578,38 @@ def cubeDetails(request,cubeid):
 
     return render(request, 'cubes/view_cube.html', context)
 
+from django.forms import ModelForm
+# from django import forms
+
+
+# class CubeForm(forms.Form):
+#     class Meta:
+#         model = Cube
+#         fields = ('name','sample') # or a tuple of fields
+
+#     def __init__(self, *args, **kwargs):
+#         super(CubeForm, self).__init__(*args, **kwargs)
+#         if self.instance: # Editing and existing instance
+#             self.form.base_fields['sample'].queryset = Sample.objects.filter(deleted=True)
+
+
+
+class CubeForm(ModelForm):
+    class Meta:
+        model = Cube
+        fields = ('name','sample')
+    def __init__(self, *args, **kwargs):
+        super(CubeForm, self).__init__(*args, **kwargs)
+        # access object through self.instance...
+        self.fields['sample'].queryset = Sample.objects.filter(occupied=False)
+
 
 #*******************Update cube******************************************************************
 class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
     template_name = 'cubes/edit_cube.html'
     model = Cube
     pk_url_kwarg = 'cubeid'
-    fields = ['occupied','sample']
+    form_class=CubeForm
 
     def get_success_url(self):
         cube = self.get_object()
@@ -592,6 +617,10 @@ class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
 
 
 
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super(UpdateCubeView, self).get_form(request, obj, **kwargs)
+    #     form.base_fields['sample'].queryset = Sample.objects.filter(deleted=True)
+    #     return form
 
 
 
@@ -686,12 +715,12 @@ class StoreSampleView(LoginRequired, CreateView):
 
 
 #*******************Update cube******************************************************************
-class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
-    template_name = 'cubes/edit_cube.html'
-    model = Cube
-    pk_url_kwarg = 'cubeid'
-    fields = ['occupied','sample']
+# class UpdateCubeView(LoginRequired, AuthorshipRequired, UpdateView):
+#     template_name = 'cubes/edit_cube.html'
+#     model = Cube
+#     pk_url_kwarg = 'cubeid'
+#     fields = ['occupied','sample']
 
-    def get_success_url(self):
-        cube = self.get_object()
-        return reverse('home', kwargs={'cubeid': cube.pk})
+#     def get_success_url(self):
+#         cube = self.get_object()
+#         return reverse('home', kwargs={'cubeid': cube.pk})
